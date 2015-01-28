@@ -1,0 +1,32 @@
+from lxml import html
+#uses lxml library for parsing html (lxml can also be used for xml)
+import requests
+#uses requests module, rather than built in urlib2, because of improved speed and readability
+import csv
+#imports csv module
+
+## section for parsing webpage in xml (in tree structure) begins ##
+
+#page = requests.get('http://www.sec.gov/Archives/edgar/data/1409970/000140997015000111/salessup_20150127-0.htm')
+#uses get method to retreieve webpage and data for filing from January 7, 2015
+
+page = requests.get('http://www.sec.gov/Archives/edgar/data/1409970/000140997009000009/salessup_20090107.htm')
+#(commented out) uses get method to retrieve webpage and data for first filing (October 14, 2008)
+
+tree = html.fromstring(page.text)
+
+
+
+raw_date_word_list = tree.xpath('//font[contains(., "Prospectus Supplement (Sales Report)")]/text()')
+#raw_date_word_list grabs the line of text that lists the filing date  
+
+raw_date_word = str(raw_date_word_list[0])
+#raw_date_word turns the single element in raw_date_list into a string
+
+raw_date = raw_date_word.splitlines()
+#raw date turns the string, which has two lines, into a list with two elements
+
+#date = [raw_date[1]]
+#date grabs the date, which is the second element in raw_date, as a list (the brackets turn it into a list)
+
+print raw_date
