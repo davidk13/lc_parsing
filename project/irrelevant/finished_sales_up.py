@@ -1,31 +1,25 @@
-import re 
-#imports module for regex string matching
 from lxml import html
 #uses lxml library for parsing html (lxml can also be used for xml)
 import requests
 #uses requests module, rather than built in urlib2, because of improved speed and readability
 import csv
 #imports csv module
-from lxml import etree
-#imports etree from lxml module (not actually sure if this is necssary--just covering bases)
+
 import lxml.html as lh
-#import the lxml.html module as lh
+
+from lxml import etree
 
 ## section for parsing webpage in xml (in tree structure) begins ##
 
-ops = open ('salesup_test.txt', 'r')
+#page = requests.get('http://www.sec.gov/Archives/edgar/data/1409970/000140997015000111/salessup_20150127-0.htm')
+#uses get method to retreieve webpage and data for filing from January 7, 2015
+
+ops = open ('salesup_links.txt', 'r')
 #open list of html links to salesup filings in read mode 
 
-
-c = 0
-#sets count c, which will be used for naming csv files, to 0 to start 
-
 for lines in ops: 
-	if re.match("(.*)(salessup)(.*)", lines):
-		a = lines.strip() 
-		tree = lh.parse(a)
-# for loop, for each line in the list, if it contains pstoingsup or postup (to avoid empty lines), 
-#strip the line of cumbersome white space and then parse using the lxml.html parse method  
+	if lines:  
+		tree = lh.parse('http://www.sec.gov/Archives/edgar/data/1409970/000140997009000344/salessup_20091013.htm')
 
 	class Loan: 
 	#define a class "Loan" which grabs the relevant data from the loan table in the filing
@@ -229,7 +223,7 @@ for lines in ops:
 
 	## section for exporting to csv begins ##
 
-	csv_out = open('salesup' + str(c) + '.csv', 'wb')
+	csv_out = open('sales_old_format.csv', 'wb')
 	#open a file for writing called sales_old_format.csv, 'wb' puts it in writing mode
 
 	#csv_out = open('sales_new_format.csv', 'wb')
@@ -268,8 +262,126 @@ for lines in ops:
 
 	##end export to csv section##
 
-	print str(c) + ': ' + str(len(rows)) + ' rows'
-		#prints count and length of rows in each csv file, in part so you can track progress
-
-	c = c + 1 
+	print len(rows)
 #prints done in command line so it is easy to see when operation is finished
+
+
+## appendix (old colde) is listed, commented out, below ##
+#print date
+
+#print rows_headings
+#print rows_values[0:3]
+#print rows[0:10]
+#print rows
+#borrower_home_ownership = tree.xpath('//tr[1]/td[2]/font/text()')
+#grabs borrower's home ownership status 
+
+#borrower
+
+#borrower_current_employer = tree.xpath('//tr[1]/td[3]/font/text()')
+#grabs borrower's current employer
+
+#borrower_length_of_employment = tree.xpath('//tr[1]/td[4]/font/text()')
+#grabs duration, in years, of employerment 
+
+#loantable = tree.xpath('//tr[2]//p/font/text()')
+#grabs numeric values of loan detail table, minus key--more elegant second solution which depends on html tags (path)
+
+#borrowerinfo1 = tree.xpath('//tr/td[2]/font/text()')
+#grabs just the values (not headings) of left half of borower characteristic tables below 
+
+#borrowerinfo2 = tree.xpath('//tr/td[4]/font/text()')
+#grabs just the values (not heaadings) of the right half of borrower characteristic tables
+
+#print 'loantable: ', loantable[:6]
+#print function to make sure command scrapes right data, commented out 
+
+#print 'borrowerinfo1: ', borrowerinfo1[:20]
+#print function to make sure command scrapes right data, commented out 
+
+#print 'borrowerinfo2: ', borrowerinfo2[:20]
+#print function to make sure command scrapes right data, commented out 
+
+#print 'loankey: ', loankey[:20]
+#print function to make sure command scrapes right data, commented out 
+
+#print 'length: ', len(loankey)
+#seeing how many loans are in a file 
+
+
+#print "loankey heading: ", loan.key_heading
+
+#print "loankey: ", loan.key[0:3]
+
+
+#print "loan_amount_heading: ", loan.amount_heading
+
+#print "loan_amount: ", loan.amount[0:3]
+
+
+#print "loan_interest_rate_heading: ", loan.interest_rate_heading
+
+#print "loan_interest_rate: ", loan.interest_rate [0:3]
+
+
+#print "loan_service_charge_heading: ", loan.service_charge_heading
+
+#print "loan_service_charge: ", loan.service_charge[0:3]
+
+
+#print "loan_initial_maturity_heading: ", loan.initial_maturity_heading
+
+#print "loan_initial_maturity: ", loan.initial_maturity[0:3]
+
+
+#print "loan_final_maturity_heading: ", loan.final_maturity_heading
+
+#print "loan_final_maturity: ", loan.final_maturity[0:3]
+
+
+#APPENDIX: OLD CODE USED
+
+#headings = tree.xpath('//td[@width="72"]/p/b/font/text()')
+#unnecessary grab of headings (since constant, do not need to grab for each table)--needed to use combination of tags and style, since tags weren't unique
+
+#oldloantable = tree.xpath('//td[@style = "BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 72pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid"]/p/font/text()')
+#(commented out) inelegant first solution which dependend on style instead of pathway for primary loan table
+
+#loankey_heading = tree.xpath('//table[2]/tr[1]/td[1]/p/b/font/text()')
+##test of grabbing heading for loankey, NOTE: IF YOU COPY AND PASTE CHROME XPATH, IT'LL INCLUDE <TBODY> WHICH HAS TO BE REMOVED	
+
+#loankey = tree.xpath('//tr[2]/td[1]/p/b/font/text()')
+##grabs unique loan transaction number (key), for use in any relational databases
+
+#loankey_heading = "Series of Member Payment Dependent Notes"
+##the correct heading for loan key
+
+#loan_amount = tree.xpath('//tr[2]/td[2]/p/font/text()')
+##grabs the amount of the loan offered
+
+#loan_amount_heading = "Maximum aggregate principal amount offered"
+##heading for loan amount
+
+#loan_interest_rate = tree.xpath('//tr[2]/td[3]/p/font/text()')
+##grabs the interest rate of the loan
+
+#loan_interest_rate_heading = "Stated interest rate"
+##heading for loan interest rate
+
+#loan_service_charge = tree.xpath('//tr[2]/td[4]/p/font/text()')
+##grabs the service charge, as a percentage, associated with the loan 
+
+#loan_service_charge_heading = "Service Charge" 
+##heading for loan interest rate
+
+#loan_initial_maturity = tree.xpath('//tr[2]/td[5]/p/font/text()')
+##grabs the initial maturity date associated with the loan 
+
+#loan_initial_maturity_heading = "Initial maturity"
+##heading for initial maturity 
+
+#loan_final_maturity = tree.xpath('//tr[2]/td[6]/p/font/text()')
+##grabs the final maturity date associated with the loan 
+
+#loan_final_maturity_heading = "Final maturity"
+##heading for final maturity 

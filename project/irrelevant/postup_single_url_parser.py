@@ -10,6 +10,8 @@ import csv
 #page = requests.get('http://www.sec.gov/Archives/edgar/data/1409970/000140997015000029/postsup_20150107-135502-0.htm')
 #uses get method to retreieve webpage and data for filing from January 7, 2015
 
+
+
 page = requests.get('http://www.sec.gov/Archives/edgar/data/1409970/000140997008000004/postingsup_20081014.htm')
 #(commented out) uses get method to retrieve webpage and data for first filing (October 14, 2008)
 
