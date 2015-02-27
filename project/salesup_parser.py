@@ -2,8 +2,6 @@ import re
 #imports module for regex string matching
 from lxml import html
 #uses lxml library for parsing html (lxml can also be used for xml)
-import requests
-#uses requests module, rather than built in urlib2, because of improved speed and readability
 import csv
 #imports csv module
 from lxml import etree
